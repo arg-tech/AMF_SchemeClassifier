@@ -1,7 +1,7 @@
 from flask import redirect, request, render_template, jsonify
 from . import application
 import json
-from app.ari import scheme_classification
+from app.sch_cls import scheme_classification
 
 
 @application.route('/', methods=['GET', 'POST'])
