@@ -21,15 +21,13 @@ def preprocess_data(filexaif):
             inferences_id.append(id)
             for edge in filexaif['edges']:
                 if edge['fromID'] == id:
-                    claim_id = edge['toID']
+                    for node in filexaif['nodes']:
+                        if node['nodeID'] == edge['toID'] and node['type'] == 'I':
+                            claim = node['text']
                 elif edge['toID'] == id:
-                    premise_id = edge['fromID']
-
-            for nd in filexaif['nodes']:
-                if nd['nodeID'] == claim_id:
-                    claim = nd['text']
-                if nd['nodeID'] == premise_id:
-                    premise = nd['text']
+                    for node in filexaif['nodes']:
+                        if node['nodeID'] == edge['fromID'] and node['type'] == 'I':
+                            premise = node['text']
 
             data['text'].append(premise+'. '+claim)
 
