@@ -4,3 +4,5 @@ numpy==1.24.1
 transformers==4.27.4
 torch==2.0.0
 datasets==2.11.0
+amf-fast-inference==0.0.1
+accelerate>=0.21.0

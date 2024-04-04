@@ -1,12 +1,16 @@
-import itertools
-from datasets import Dataset, DatasetDict
+import torch
+from datasets import Dataset
 from transformers import Trainer, AutoTokenizer, AutoModelForSequenceClassification
+from amf_fast_inference import model
+from torch.nn import functional as F
 import numpy as np
 import json
 
 
-TOKENIZER = AutoTokenizer.from_pretrained("raruidol/SchemeClassifier-MULTI")
-MODEL = AutoModelForSequenceClassification.from_pretrained("raruidol/SchemeClassifier-MULTI")
+TOKENIZER = AutoTokenizer.from_pretrained("raruidol/SchemeClassifier3-ENG")
+MODEL = AutoModelForSequenceClassification.from_pretrained("raruidol/SchemeClassifier3-ENG")
+#model_loader = model.ModelLoader("raruidol/SchemeClassifier3-ENG")
+#MODEL = model_loader.load_model()
 
 
 def preprocess_data(filexaif):
@@ -44,17 +48,23 @@ def tokenize_sequence(samples):
 
 def make_predictions(trainer, tknz_data):
     predicted_logprobs = trainer.predict(tknz_data)
-    predicted_labels = np.argmax(predicted_logprobs.predictions, axis=-1)
+    labels = []
+    for sample in predicted_logprobs.predictions:
+        torch_logits = torch.from_numpy(sample)
+        probabilities = F.softmax(torch_logits, dim=-1).numpy()
+        valid_check = probabilities > 0.95
+        if True in valid_check:
+            labels.append(np.argmax(sample, axis=-1))
+        else:
+            labels.append(-1)
 
-    return predicted_labels
+    return labels
 
 
 def output_xaif(idents, labels, fileaif):
-    mapping_label = {0:"position to know", 1:"expert opinion", 2:"direct ad hominem", 3:"inconsistent commitment",
-                    4:"popular practice", 5:"popular opinion", 6:"analogy", 7:"precedent", 8:"example",
-                    9:"established rule", 10:"cause to effect", 11:"verbal classification", 12:"slippery slope",
-                    13:"sign", 14:"ignorance", 15:"threat", 16:"waste", 17:"sunk costs", 18:"witness testimony",
-                    19:"best explanation"}
+    mapping_label = {-1: "Default Inference", 0: "Position to Know Argument", 1: "Ad Hominem Argument", 2: "Popular Acceptance",
+       3: "Defeasible Rule-based Argument", 4: "Argument Based on Cases", 5: "Chained Argument from Rules and Cases",
+       6: "Discovery Argument", 7: "Practical Reasoning"}
     for i in range(len(labels)):
         lb = mapping_label[labels[i]]
         id = idents[i]
