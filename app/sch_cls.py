@@ -57,7 +57,7 @@ def pipeline_predictions(pipeline, data):
     print(outputs)
 
     for out in outputs:
-        if out['score'] > 0.55:
+        if out['score'] > 0.95:
             labels.append(out['label'])
         else:
             labels.append('Default Inference')
@@ -72,7 +72,7 @@ def make_predictions(trainer, tknz_data):
     for sample in predicted_logprobs.predictions:
         torch_logits = torch.from_numpy(sample)
         probabilities = F.softmax(torch_logits, dim=-1).numpy()
-        valid_check = probabilities > 0.95
+        valid_check = probabilities > 0.7
         if True in valid_check:
             labels.append(np.argmax(sample, axis=-1))
         else:
