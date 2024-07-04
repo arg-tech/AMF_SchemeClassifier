@@ -1,16 +1,17 @@
 import torch
 from datasets import Dataset
-from transformers import Trainer, AutoTokenizer, AutoModelForSequenceClassification
-from amf_fast_inference import model
+from transformers import Trainer, AutoTokenizer, AutoModelForSequenceClassification, pipeline
 from torch.nn import functional as F
 import numpy as np
 import json
+from amf_fast_inference import model
 
 
-TOKENIZER = AutoTokenizer.from_pretrained("raruidol/SchemeClassifier3-ENG")
-MODEL = AutoModelForSequenceClassification.from_pretrained("raruidol/SchemeClassifier3-ENG")
-#model_loader = model.ModelLoader("raruidol/SchemeClassifier3-ENG")
-#MODEL = model_loader.load_model()
+TOKENIZER = AutoTokenizer.from_pretrained("raruidol/SchemeClassifier3-ENG-Dial")
+# MODEL = AutoModelForSequenceClassification.from_pretrained("raruidol/SchemeClassifier3-ENG-Dial")
+MODEL_ID = "raruidol/SchemeClassifier3-ENG-Dial"
+LOADER = model.ModelLoader(MODEL_ID)
+PRUNED_MODEL = LOADER.load_model()
 
 
 def preprocess_data(filexaif):
@@ -45,6 +46,26 @@ def tokenize_sequence(samples):
     return TOKENIZER(samples["text"], padding=True, truncation=True)
 
 
+def pipeline_predictions(pipeline, data):
+    labels = []
+    pipeline_input = []
+    for i in range(len(data['text'])):
+        sample = data['text'][i]
+        pipeline_input.append(sample)
+
+    outputs = pipeline(pipeline_input)
+    print(outputs)
+
+    for out in outputs:
+        if out['score'] > 0.55:
+            labels.append(out['label'])
+        else:
+            labels.append('Default Inference')
+
+    return labels
+
+
+
 def make_predictions(trainer, tknz_data):
     predicted_logprobs = trainer.predict(tknz_data)
     labels = []
@@ -61,11 +82,11 @@ def make_predictions(trainer, tknz_data):
 
 
 def output_xaif(idents, labels, fileaif):
-    mapping_label = {-1: "Default Inference", 0: "Position to Know Argument", 1: "Ad Hominem Argument", 2: "Popular Acceptance",
-       3: "Defeasible Rule-based Argument", 4: "Argument Based on Cases", 5: "Chained Argument from Rules and Cases",
-       6: "Discovery Argument", 7: "Practical Reasoning"}
+    #mapping_label = {-1: "Default Inference", 0: "Position to Know Argument", 1: "Ad Hominem Argument", 2: "Popular Acceptance",
+    #   3: "Defeasible Rule-based Argument", 4: "Argument Based on Cases", 5: "Chained Argument from Rules and Cases",
+    #   6: "Discovery Argument", 7: "Practical Reasoning"}
     for i in range(len(labels)):
-        lb = mapping_label[labels[i]]
+        lb = labels[i]
         id = idents[i]
         for node in fileaif['AIF']['nodes']:
             if node['nodeID'] == id:
@@ -80,14 +101,11 @@ def scheme_classification(xaif):
     # and a list of tuples with the corresponding "I" node ids to generate the final xaif file.
     dataset, ids = preprocess_data(xaif['AIF'])
 
-    # Tokenize the Dataset.
-    tokenized_data = dataset.map(tokenize_sequence, batched=True)
-
-    # Instantiate HF Trainer for predicting.
-    trainer = Trainer(MODEL)
+    # Inference Pipeline
+    pl = pipeline("text-classification", model=PRUNED_MODEL, tokenizer=TOKENIZER)
 
     # Predict the list of labels for all the pairs of "I" nodes.
-    labels = make_predictions(trainer, tokenized_data)
+    labels = pipeline_predictions(pl, dataset)
 
     # Prepare the xAIF output file.
     out_xaif = output_xaif(ids, labels, xaif)
@@ -97,11 +115,11 @@ def scheme_classification(xaif):
 
 # DEBUGGING:
 if __name__ == "__main__":
-    ff = open('../data.json', 'r')
+    ff = open('../data_out3.json', 'r')
     content = json.load(ff)
     # print(content)
     out = scheme_classification(content)
     # print(out)
-    with open("../data_out.json", "w") as outfile:
+    with open("../data_out_sch.json", "w") as outfile:
         json.dump(out, outfile, indent=4)
 
