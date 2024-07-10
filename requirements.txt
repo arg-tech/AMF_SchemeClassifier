@@ -1,9 +1,9 @@
-Flask==2.0.3
-requests==2.23.0
+Flask
+requests
 numpy
-transformers==4.39.3
+transformers
 torch
 datasets
-accelerate>=0.21.0
+accelerate
 amf-fast-inference==0.0.3
 xaif_eval==0.0.9
