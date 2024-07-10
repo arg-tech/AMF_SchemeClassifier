@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.11
 
 RUN mkdir -p /home/amf_schemes
 WORKDIR /home/amf_schemes
