@@ -2,8 +2,8 @@ Flask==2.0.3
 requests==2.23.0
 numpy
 transformers==4.39.3
-torch==2.0.0
-datasets==2.11.0
+torch
+datasets
 accelerate>=0.21.0
 amf-fast-inference==0.0.3
 xaif_eval==0.0.9
