@@ -1,0 +1,24 @@
+{
+  "AIF": {
+    "nodes": [
+      {
+        "nodeID": 1,
+        "text": "Climate change is a serious global issue.",
+        "type": "I"
+      },
+      {
+        "nodeID": 2,
+        "text": "We need to take action.",
+        "type": "I"
+      }
+    ],
+    "edges": [],
+    "locutions": [],
+    "participants": [],
+    "schemefulfillments": [],
+    "descriptorfulfillments": []
+  },
+  "text": "",
+  "dialog": false,
+  "OVA": {}
+}

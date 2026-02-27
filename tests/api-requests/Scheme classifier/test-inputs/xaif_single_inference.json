@@ -1,0 +1,40 @@
+{
+  "AIF": {
+    "nodes": [
+      {
+        "nodeID": 1,
+        "text": "Dr. Smith, a leading climate scientist, has stated that global temperatures will rise by 2 degrees.",
+        "type": "I"
+      },
+      {
+        "nodeID": 2,
+        "text": "Global temperatures will rise by 2 degrees.",
+        "type": "I"
+      },
+      {
+        "nodeID": 3,
+        "text": "Default Inference",
+        "type": "RA"
+      }
+    ],
+    "edges": [
+      {
+        "edgeID": 1,
+        "fromID": 1,
+        "toID": 3
+      },
+      {
+        "edgeID": 2,
+        "fromID": 3,
+        "toID": 2
+      }
+    ],
+    "locutions": [],
+    "participants": [],
+    "schemefulfillments": [],
+    "descriptorfulfillments": []
+  },
+  "text": "",
+  "dialog": false,
+  "OVA": {}
+}

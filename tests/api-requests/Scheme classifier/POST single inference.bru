@@ -1,0 +1,69 @@
+meta {
+  name: POST single inference
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  file: @file(test-inputs/xaif_single_inference.json)
+}
+
+tests {
+  const validSchemes = [
+    "Position to Know Argument",
+    "Ad Hominem Argument",
+    "Popular Acceptance",
+    "Defeasible Rule-based Argument",
+    "Argument Based on Cases",
+    "Chained Argument with Rules and Cases",
+    "Discovery Argument",
+    "Practical Reasoning Argument",
+    "Default Inference"
+  ];
+
+  test("Should return 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response should be valid JSON with AIF structure", function () {
+    const data = res.getBody();
+    expect(data).to.have.property("AIF");
+    expect(data.AIF).to.have.property("nodes");
+    expect(data.AIF).to.have.property("edges");
+  });
+
+  test("Should preserve original node count", function () {
+    const data = res.getBody();
+    expect(data.AIF.nodes).to.have.lengthOf(3);
+  });
+
+  test("Should preserve original edge count", function () {
+    const data = res.getBody();
+    expect(data.AIF.edges).to.have.lengthOf(2);
+  });
+
+  test("RA node should be classified with a valid scheme", function () {
+    const data = res.getBody();
+    const raNodes = data.AIF.nodes.filter(n => n.type === "RA");
+    expect(raNodes).to.have.lengthOf(1);
+    expect(validSchemes).to.include(raNodes[0].text);
+  });
+
+  test("I nodes should remain unchanged", function () {
+    const data = res.getBody();
+    const iNodes = data.AIF.nodes.filter(n => n.type === "I");
+    expect(iNodes).to.have.lengthOf(2);
+    expect(iNodes[0].text).to.include("Dr. Smith");
+    expect(iNodes[1].text).to.include("Global temperatures");
+  });
+}

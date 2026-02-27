@@ -1,0 +1,110 @@
+{
+  "AIF": {
+    "nodes": [
+      {
+        "nodeID": 1,
+        "text": "Dr. Smith is a leading expert on infectious diseases.",
+        "type": "I"
+      },
+      {
+        "nodeID": 2,
+        "text": "Dr. Smith has published over 200 peer-reviewed papers on this topic.",
+        "type": "I"
+      },
+      {
+        "nodeID": 3,
+        "text": "The new vaccine is effective against the virus.",
+        "type": "I"
+      },
+      {
+        "nodeID": 4,
+        "text": "Default Inference",
+        "type": "RA"
+      },
+      {
+        "nodeID": 5,
+        "text": "If the vaccine is effective, we should roll it out nationwide.",
+        "type": "I"
+      },
+      {
+        "nodeID": 6,
+        "text": "We should roll out the vaccine nationwide.",
+        "type": "I"
+      },
+      {
+        "nodeID": 7,
+        "text": "Default Inference",
+        "type": "RA"
+      },
+      {
+        "nodeID": 100,
+        "text": "Dr. Smith is a leading expert on infectious diseases.",
+        "type": "L"
+      },
+      {
+        "nodeID": 101,
+        "text": "Dr. Smith has published over 200 peer-reviewed papers on this topic.",
+        "type": "L"
+      },
+      {
+        "nodeID": 200,
+        "text": "Default Transition",
+        "type": "YA"
+      }
+    ],
+    "edges": [
+      {
+        "edgeID": 1,
+        "fromID": 1,
+        "toID": 4
+      },
+      {
+        "edgeID": 2,
+        "fromID": 2,
+        "toID": 4
+      },
+      {
+        "edgeID": 3,
+        "fromID": 4,
+        "toID": 3
+      },
+      {
+        "edgeID": 4,
+        "fromID": 3,
+        "toID": 7
+      },
+      {
+        "edgeID": 5,
+        "fromID": 5,
+        "toID": 7
+      },
+      {
+        "edgeID": 6,
+        "fromID": 7,
+        "toID": 6
+      },
+      {
+        "edgeID": 7,
+        "fromID": 100,
+        "toID": 200
+      },
+      {
+        "edgeID": 8,
+        "fromID": 200,
+        "toID": 101
+      }
+    ],
+    "locutions": [
+      { "personID": 1, "nodeID": 100 },
+      { "personID": 1, "nodeID": 101 }
+    ],
+    "participants": [
+      { "participantID": 1, "firstname": "Dr.", "surname": "Smith" }
+    ],
+    "schemefulfillments": [],
+    "descriptorfulfillments": []
+  },
+  "text": "Dr. Smith is a leading expert on infectious diseases. Dr. Smith has published over 200 peer-reviewed papers on this topic.",
+  "dialog": false,
+  "OVA": {}
+}
