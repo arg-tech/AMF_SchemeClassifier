@@ -1,0 +1,46 @@
+meta {
+  name: POST no inferences
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  file: @file(test-inputs/xaif_no_inferences.json)
+}
+
+tests {
+  test("Should return 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("Response should be valid JSON with AIF structure", function () {
+    const data = res.getBody();
+    expect(data).to.have.property("AIF");
+    expect(data.AIF).to.have.property("nodes");
+    expect(data.AIF).to.have.property("edges");
+  });
+
+  test("Should return input unchanged when no RA nodes present", function () {
+    const data = res.getBody();
+    expect(data.AIF.nodes).to.have.lengthOf(2);
+    const iNodes = data.AIF.nodes.filter(n => n.type === "I");
+    expect(iNodes).to.have.lengthOf(2);
+    const raNodes = data.AIF.nodes.filter(n => n.type === "RA");
+    expect(raNodes).to.have.lengthOf(0);
+  });
+
+  test("Should preserve edges as empty", function () {
+    const data = res.getBody();
+    expect(data.AIF.edges).to.have.lengthOf(0);
+  });
+}

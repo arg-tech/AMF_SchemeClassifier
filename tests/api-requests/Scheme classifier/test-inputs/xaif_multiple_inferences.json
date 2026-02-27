@@ -1,0 +1,65 @@
+{
+  "AIF": {
+    "nodes": [
+      {
+        "nodeID": 1,
+        "text": "Professor Jones, who has studied this topic for 30 years, says vaccination is safe.",
+        "type": "I"
+      },
+      {
+        "nodeID": 2,
+        "text": "Vaccination is safe.",
+        "type": "I"
+      },
+      {
+        "nodeID": 3,
+        "text": "Default Inference",
+        "type": "RA"
+      },
+      {
+        "nodeID": 4,
+        "text": "In a similar case last year, the policy led to improved outcomes.",
+        "type": "I"
+      },
+      {
+        "nodeID": 5,
+        "text": "This policy will lead to improved outcomes.",
+        "type": "I"
+      },
+      {
+        "nodeID": 6,
+        "text": "Default Inference",
+        "type": "RA"
+      }
+    ],
+    "edges": [
+      {
+        "edgeID": 1,
+        "fromID": 1,
+        "toID": 3
+      },
+      {
+        "edgeID": 2,
+        "fromID": 3,
+        "toID": 2
+      },
+      {
+        "edgeID": 3,
+        "fromID": 4,
+        "toID": 6
+      },
+      {
+        "edgeID": 4,
+        "fromID": 6,
+        "toID": 5
+      }
+    ],
+    "locutions": [],
+    "participants": [],
+    "schemefulfillments": [],
+    "descriptorfulfillments": []
+  },
+  "text": "",
+  "dialog": false,
+  "OVA": {}
+}
