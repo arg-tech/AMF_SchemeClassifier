@@ -1,5 +1,3 @@
-version: '1'
-
 services:
  amf_schemes:
   container_name: amf_schemes
